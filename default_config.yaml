@@ -1,0 +1,25 @@
+# Facebook Pages — Default Configuration
+# These values are used when no config.json exists yet.
+
+# Connection — Page Access Token authentication
+# Get a Page Access Token via: developers.facebook.com > Graph API Explorer
+page_access_token: ""    # Long-lived Page Access Token
+page_id: ""              # Numeric Page ID (auto-resolved from /me if blank)
+
+# Defaults
+defaults:
+  post_limit: 25
+  comment_limit: 25
+  insights_period: "day"
+
+# Memory integration
+memory:
+  auto_save: true
+  export_format: "markdown"
+
+# Security
+security:
+  max_post_length: 63206
+  max_comment_length: 8000
+  sanitize_content: true
+  strip_injection_patterns: true

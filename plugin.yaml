@@ -1,0 +1,9 @@
+name: facebook
+title: Facebook Pages
+description: "Manage Facebook Pages: post, read, moderate, and analyze via Graph API."
+version: 1.0.0
+settings_sections:
+  - external
+per_project_config: true
+per_agent_config: true
+always_enabled: false
