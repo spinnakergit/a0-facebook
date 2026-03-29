@@ -10,9 +10,9 @@ class FacebookInsights(Tool):
         metric = self.args.get("metric", "")
         period = self.args.get("period", "day")
 
-        from plugins.facebook.helpers.facebook_auth import get_facebook_config
+        from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
         config = get_facebook_config(self.agent)
-        from plugins.facebook.helpers.facebook_client import FacebookClient
+        from usr.plugins.facebook.helpers.facebook_client import FacebookClient
         client = FacebookClient(config)
 
         try:
@@ -33,7 +33,7 @@ class FacebookInsights(Tool):
                 data = result.get("data", [])
                 if not data:
                     return Response(message="No page insights data available.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import format_insights
+                from usr.plugins.facebook.helpers.sanitize import format_insights
                 return Response(
                     message=f"Page Insights ({period}):\n\n{format_insights(data)}",
                     break_loop=False,
@@ -42,7 +42,7 @@ class FacebookInsights(Tool):
             elif action == "post":
                 if not post_id:
                     return Response(message="Error: 'post_id' is required for post insights.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import validate_post_id
+                from usr.plugins.facebook.helpers.sanitize import validate_post_id
                 try:
                     post_id = validate_post_id(post_id)
                 except ValueError as e:
@@ -59,7 +59,7 @@ class FacebookInsights(Tool):
                 data = result.get("data", [])
                 if not data:
                     return Response(message="No post insights data available.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import format_insights
+                from usr.plugins.facebook.helpers.sanitize import format_insights
                 return Response(
                     message=f"Post Insights:\n\n{format_insights(data)}",
                     break_loop=False,

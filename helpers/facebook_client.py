@@ -65,18 +65,18 @@ class FacebookClient:
     @classmethod
     def from_config(cls, agent=None):
         """Factory: create client from A0 plugin config."""
-        from plugins.facebook.helpers.facebook_auth import get_facebook_config
+        from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
         config = get_facebook_config(agent)
         return cls(config)
 
     def _get_token(self) -> str:
         """Get the page access token."""
-        from plugins.facebook.helpers.facebook_auth import get_page_access_token
+        from usr.plugins.facebook.helpers.facebook_auth import get_page_access_token
         return get_page_access_token(self.config)
 
     def _get_page_id(self) -> str:
         """Get the page ID from config or by resolving from token."""
-        from plugins.facebook.helpers.facebook_auth import get_page_id_from_token
+        from usr.plugins.facebook.helpers.facebook_auth import get_page_id_from_token
         return get_page_id_from_token(self.config)
 
     async def _get_session(self) -> aiohttp.ClientSession:
@@ -205,7 +205,7 @@ class FacebookClient:
 
         result = await self._request("POST", f"{page_id}/feed", json_body=body)
         if not result.get("error"):
-            from plugins.facebook.helpers.facebook_auth import increment_usage
+            from usr.plugins.facebook.helpers.facebook_auth import increment_usage
             increment_usage(self.config)
         return result
 
@@ -230,7 +230,7 @@ class FacebookClient:
 
         result = await self._request("POST", f"{page_id}/feed", json_body=body)
         if not result.get("error"):
-            from plugins.facebook.helpers.facebook_auth import increment_usage
+            from usr.plugins.facebook.helpers.facebook_auth import increment_usage
             increment_usage(self.config)
         return result
 
@@ -263,7 +263,7 @@ class FacebookClient:
         """Delete a post. DELETE /{post-id}."""
         result = await self._request("DELETE", post_id)
         if not result.get("error"):
-            from plugins.facebook.helpers.facebook_auth import increment_usage
+            from usr.plugins.facebook.helpers.facebook_auth import increment_usage
             increment_usage(self.config, "posts_deleted")
         return result
 
@@ -283,7 +283,7 @@ class FacebookClient:
             json_body={"message": message},
         )
         if not result.get("error"):
-            from plugins.facebook.helpers.facebook_auth import increment_usage
+            from usr.plugins.facebook.helpers.facebook_auth import increment_usage
             increment_usage(self.config, "comments")
         return result
 
@@ -334,7 +334,7 @@ class FacebookClient:
             return {"error": True, "detail": "Either image_url or image_path is required"}
 
         if not result.get("error"):
-            from plugins.facebook.helpers.facebook_auth import increment_usage
+            from usr.plugins.facebook.helpers.facebook_auth import increment_usage
             increment_usage(self.config, "photos_uploaded")
         return result
 

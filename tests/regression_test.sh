@@ -194,7 +194,7 @@ section "3. Python Imports"
 # ============================================================
 
 # T3.1: Auth module import
-RESULT=$(container_python "from plugins.facebook.helpers.facebook_auth import get_facebook_config, is_authenticated, has_credentials, get_auth_params, get_usage, increment_usage, secure_write_json; print('ok')")
+RESULT=$(container_python "from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config, is_authenticated, has_credentials, get_auth_params, get_usage, increment_usage, secure_write_json; print('ok')")
 if [ "$RESULT" = "ok" ]; then
     pass "T3.1 Import facebook_auth (all functions)"
 else
@@ -202,7 +202,7 @@ else
 fi
 
 # T3.2: Client import
-RESULT=$(container_python "from plugins.facebook.helpers.facebook_client import FacebookClient; print('ok')")
+RESULT=$(container_python "from usr.plugins.facebook.helpers.facebook_client import FacebookClient; print('ok')")
 if [ "$RESULT" = "ok" ]; then
     pass "T3.2 Import FacebookClient"
 else
@@ -210,7 +210,7 @@ else
 fi
 
 # T3.3: Sanitize module import
-RESULT=$(container_python "from plugins.facebook.helpers.sanitize import sanitize_text, validate_page_id, validate_post_id, validate_comment_id, format_post, format_posts, format_comment, format_comments, format_insights, format_page_info; print('ok')")
+RESULT=$(container_python "from usr.plugins.facebook.helpers.sanitize import sanitize_text, validate_page_id, validate_post_id, validate_comment_id, format_post, format_posts, format_comment, format_comments, format_insights, format_page_info; print('ok')")
 if [ "$RESULT" = "ok" ]; then
     pass "T3.3 Import sanitize module (all functions)"
 else
@@ -285,7 +285,7 @@ section "5. Sanitization & Validation"
 
 # T5.1: Unicode normalization (zero-width stripping)
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 test = 'Hello\u200b \u200dWorld\ufeff!'
 result = sanitize_text(test)
 print('clean' if result == 'Hello World!' else f'modified: {repr(result)}')
@@ -298,7 +298,7 @@ fi
 
 # T5.2: NFKC normalization
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 test = '\uff28\uff45\uff4c\uff4c\uff4f'  # Fullwidth 'Hello'
 result = sanitize_text(test)
 print('normalized' if result == 'Hello' else f'raw: {repr(result)}')
@@ -311,7 +311,7 @@ fi
 
 # T5.3: Whitespace collapsing
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 test = 'Hello\n\n\n\n\nWorld'
 result = sanitize_text(test)
 print('collapsed' if result == 'Hello\n\nWorld' else f'raw: {repr(result)}')
@@ -324,7 +324,7 @@ fi
 
 # T5.4: Clean messages pass through
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 test = 'Hello! Check out our new product launch today.'
 result = sanitize_text(test)
 print('clean' if result == test else 'modified')
@@ -337,7 +337,7 @@ fi
 
 # T5.5: Post length validation (valid)
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_post_length
+from usr.plugins.facebook.helpers.sanitize import validate_post_length
 ok, count = validate_post_length('Hello World')
 print('ok' if ok and count == 11 else f'fail: ok={ok}, count={count}')
 ")
@@ -349,7 +349,7 @@ fi
 
 # T5.6: Post length validation (too long)
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_post_length
+from usr.plugins.facebook.helpers.sanitize import validate_post_length
 text = 'A' * 70000
 ok, count = validate_post_length(text)
 print('rejected' if not ok and count == 70000 else f'fail: ok={ok}, count={count}')
@@ -362,7 +362,7 @@ fi
 
 # T5.7: Page ID validation (valid numeric)
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_page_id
+from usr.plugins.facebook.helpers.sanitize import validate_page_id
 try:
     result = validate_page_id('123456789012345')
     print('ok' if result == '123456789012345' else 'wrong')
@@ -377,7 +377,7 @@ fi
 
 # T5.8: Page ID validation (valid slug)
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_page_id
+from usr.plugins.facebook.helpers.sanitize import validate_page_id
 try:
     result = validate_page_id('my.page.name')
     print('ok' if result == 'my.page.name' else 'wrong')
@@ -392,7 +392,7 @@ fi
 
 # T5.9: Page ID validation (injection attempt)
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_page_id
+from usr.plugins.facebook.helpers.sanitize import validate_page_id
 try:
     validate_page_id('123; DROP TABLE pages')
     print('passed')
@@ -407,7 +407,7 @@ fi
 
 # T5.10: Post ID validation
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_post_id
+from usr.plugins.facebook.helpers.sanitize import validate_post_id
 try:
     r1 = validate_post_id('123456789_987654321')
     valid_compound = r1 == '123456789_987654321'
@@ -433,7 +433,7 @@ fi
 
 # T5.11: Comment ID validation
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_comment_id
+from usr.plugins.facebook.helpers.sanitize import validate_comment_id
 try:
     r = validate_comment_id('123456789_987654321')
     print('ok' if r == '123456789_987654321' else 'wrong')
@@ -448,7 +448,7 @@ fi
 
 # T5.12: Comment length validation
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import validate_comment_length
+from usr.plugins.facebook.helpers.sanitize import validate_comment_length
 ok, count = validate_comment_length('A' * 9000)
 print('rejected' if not ok and count == 9000 else 'fail')
 ")
@@ -464,7 +464,7 @@ section "6. Formatting Functions"
 
 # T6.1: format_post
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import format_post
+from usr.plugins.facebook.helpers.sanitize import format_post
 post = {'message': 'Hello World', 'created_time': '2026-03-15T10:00:00', 'id': '123_456', 'type': 'status',
         'likes': {'summary': {'total_count': 10}}, 'comments': {'summary': {'total_count': 5}}, 'shares': {'count': 2}}
 result = format_post(post)
@@ -478,7 +478,7 @@ fi
 
 # T6.2: format_posts
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import format_posts
+from usr.plugins.facebook.helpers.sanitize import format_posts
 posts = [{'message': 'Post 1', 'created_time': '', 'id': '1', 'likes': {}, 'comments': {}, 'shares': {}},
          {'message': 'Post 2', 'created_time': '', 'id': '2', 'likes': {}, 'comments': {}, 'shares': {}}]
 result = format_posts(posts)
@@ -492,7 +492,7 @@ fi
 
 # T6.3: format_comment
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import format_comment
+from usr.plugins.facebook.helpers.sanitize import format_comment
 comment = {'message': 'Great post!', 'from': {'name': 'John'}, 'created_time': '2026-03-15T10:00:00',
            'id': '789', 'like_count': 3, 'comment_count': 1}
 result = format_comment(comment)
@@ -506,7 +506,7 @@ fi
 
 # T6.4: format_insights
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import format_insights
+from usr.plugins.facebook.helpers.sanitize import format_insights
 data = [{'name': 'page_impressions', 'title': 'Page Impressions', 'period': 'day', 'description': 'Total impressions',
          'values': [{'end_time': '2026-03-15', 'value': 1234}]}]
 result = format_insights(data)
@@ -520,7 +520,7 @@ fi
 
 # T6.5: format_page_info
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import format_page_info
+from usr.plugins.facebook.helpers.sanitize import format_page_info
 page = {'name': 'My Page', 'id': '123', 'category': 'Business', 'fan_count': 5000, 'about': 'Test page'}
 result = format_page_info(page)
 print('ok' if 'My Page' in result and 'Business' in result and '5000' in result else 'fail')
@@ -533,7 +533,7 @@ fi
 
 # T6.6: format_posts handles empty list
 RESULT=$(container_python "
-from plugins.facebook.helpers.sanitize import format_posts
+from usr.plugins.facebook.helpers.sanitize import format_posts
 result = format_posts([])
 print('ok' if 'No posts' in result else 'fail')
 ")
@@ -688,7 +688,7 @@ section "12. Security Hardening Checks"
 
 # T12.1: Secure file write function exists and uses atomic writes
 RESULT=$(container_python "
-from plugins.facebook.helpers.facebook_auth import secure_write_json
+from usr.plugins.facebook.helpers.facebook_auth import secure_write_json
 import inspect
 src = inspect.getsource(secure_write_json)
 has_atomic = 'tmp' in src and ('replace' in src or 'rename' in src)
@@ -727,7 +727,7 @@ fi
 
 # T12.3: Config API masks sensitive fields
 RESULT=$(container_python "
-from plugins.facebook.api.facebook_config_api import SENSITIVE_FIELDS
+from usr.plugins.facebook.api.facebook_config_api import SENSITIVE_FIELDS
 print('ok' if 'page_access_token' in SENSITIVE_FIELDS else 'missing')
 ")
 if [ "$RESULT" = "ok" ]; then
@@ -738,7 +738,7 @@ fi
 
 # T12.4: Rate limiter exists
 RESULT=$(container_python "
-from plugins.facebook.helpers.facebook_client import FacebookRateLimiter
+from usr.plugins.facebook.helpers.facebook_client import FacebookRateLimiter
 rl = FacebookRateLimiter()
 print('ok' if hasattr(rl, '_max_calls_per_hour') else 'missing')
 ")
@@ -750,7 +750,7 @@ fi
 
 # T12.5: Client from_config factory method
 RESULT=$(container_python "
-from plugins.facebook.helpers.facebook_client import FacebookClient
+from usr.plugins.facebook.helpers.facebook_client import FacebookClient
 print('ok' if hasattr(FacebookClient, 'from_config') else 'missing')
 ")
 if [ "$RESULT" = "ok" ]; then
@@ -761,7 +761,7 @@ fi
 
 # T12.6: Usage tracking
 RESULT=$(container_python "
-from plugins.facebook.helpers.facebook_auth import get_usage, increment_usage, get_facebook_config
+from usr.plugins.facebook.helpers.facebook_auth import get_usage, increment_usage, get_facebook_config
 config = get_facebook_config()
 usage = get_usage(config)
 has_fields = all(k in usage for k in ('month', 'posts_created', 'posts_deleted', 'comments', 'photos_uploaded'))

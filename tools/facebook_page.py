@@ -7,9 +7,9 @@ class FacebookPage(Tool):
     async def execute(self, **kwargs) -> Response:
         action = self.args.get("action", "info")
 
-        from plugins.facebook.helpers.facebook_auth import get_facebook_config
+        from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
         config = get_facebook_config(self.agent)
-        from plugins.facebook.helpers.facebook_client import FacebookClient
+        from usr.plugins.facebook.helpers.facebook_client import FacebookClient
         client = FacebookClient(config)
 
         try:
@@ -21,7 +21,7 @@ class FacebookPage(Tool):
                         message=f"Error: {result.get('detail', 'Unknown error')}",
                         break_loop=False,
                     )
-                from plugins.facebook.helpers.sanitize import format_page_info
+                from usr.plugins.facebook.helpers.sanitize import format_page_info
                 return Response(message=format_page_info(result), break_loop=False)
 
             elif action == "pages_list":

@@ -466,8 +466,8 @@ if [ "$HAS_CREDS" = "yes" ]; then
     track "HV-31"
     RESULT=$(pyexec "
 import asyncio
-from plugins.facebook.helpers.facebook_auth import get_facebook_config
-from plugins.facebook.helpers.facebook_client import FacebookClient
+from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
+from usr.plugins.facebook.helpers.facebook_client import FacebookClient
 config = get_facebook_config()
 client = FacebookClient(config)
 async def test():
@@ -496,8 +496,8 @@ asyncio.run(test())
     track "HV-19"
     RESULT=$(pyexec "
 import asyncio
-from plugins.facebook.helpers.facebook_auth import get_facebook_config
-from plugins.facebook.helpers.facebook_client import FacebookClient
+from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
+from usr.plugins.facebook.helpers.facebook_client import FacebookClient
 config = get_facebook_config()
 client = FacebookClient(config)
 async def test():
@@ -526,8 +526,8 @@ asyncio.run(test())
     track "HV-29"
     RESULT=$(pyexec "
 import asyncio
-from plugins.facebook.helpers.facebook_auth import get_facebook_config
-from plugins.facebook.helpers.facebook_client import FacebookClient
+from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
+from usr.plugins.facebook.helpers.facebook_client import FacebookClient
 config = get_facebook_config()
 client = FacebookClient(config)
 async def test():
@@ -564,8 +564,8 @@ asyncio.run(test())
     track "HV-32"
     RESULT=$(pyexec "
 import asyncio
-from plugins.facebook.helpers.facebook_auth import get_facebook_config
-from plugins.facebook.helpers.facebook_client import FacebookClient
+from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
+from usr.plugins.facebook.helpers.facebook_client import FacebookClient
 config = get_facebook_config()
 client = FacebookClient(config)
 async def test():
@@ -613,7 +613,7 @@ section "Phase D: Error Handling & Validation (HV-12, HV-22, HV-35, HV-36)"
 # HV-22: Invalid post_id rejected
 track "HV-22"
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_post_id
+from usr.plugins.facebook.helpers.sanitize import validate_post_id
 try:
     validate_post_id('invalid_id_format!@#')
     print('FAIL:no_error')
@@ -629,7 +629,7 @@ fi
 
 # Valid post_id accepted
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_post_id
+from usr.plugins.facebook.helpers.sanitize import validate_post_id
 try:
     r = validate_post_id('123456789_987654321')
     if r:
@@ -648,7 +648,7 @@ fi
 
 # Invalid comment_id rejected
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_comment_id
+from usr.plugins.facebook.helpers.sanitize import validate_comment_id
 try:
     validate_comment_id('not_a_valid_id!@#')
     print('FAIL:no_error')
@@ -664,7 +664,7 @@ fi
 
 # Valid comment_id accepted
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_comment_id
+from usr.plugins.facebook.helpers.sanitize import validate_comment_id
 try:
     r = validate_comment_id('123456789_987654321')
     if r:
@@ -683,7 +683,7 @@ fi
 
 # Invalid page_id rejected
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_page_id
+from usr.plugins.facebook.helpers.sanitize import validate_page_id
 try:
     validate_page_id('')
     print('FAIL:no_error')
@@ -699,7 +699,7 @@ fi
 
 # Valid page_id (numeric) accepted
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_page_id
+from usr.plugins.facebook.helpers.sanitize import validate_page_id
 try:
     r = validate_page_id('123456789012345')
     if r == '123456789012345':
@@ -718,7 +718,7 @@ fi
 
 # Valid page_id (slug) accepted
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_page_id
+from usr.plugins.facebook.helpers.sanitize import validate_page_id
 try:
     r = validate_page_id('my.page.name')
     if r == 'my.page.name':
@@ -738,7 +738,7 @@ fi
 # HV-35: Post too long (>63206 chars)
 track "HV-35"
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_post_length
+from usr.plugins.facebook.helpers.sanitize import validate_post_length
 ok, count = validate_post_length('x' * 63207)
 if not ok:
     print('PASS')
@@ -754,7 +754,7 @@ fi
 
 # Normal post accepted
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_post_length
+from usr.plugins.facebook.helpers.sanitize import validate_post_length
 ok, count = validate_post_length('Hello from Agent Zero!')
 if ok:
     print('PASS')
@@ -770,7 +770,7 @@ fi
 
 # Exact boundary: 63206 chars OK
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_post_length
+from usr.plugins.facebook.helpers.sanitize import validate_post_length
 ok, count = validate_post_length('x' * 63206)
 if ok and count == 63206:
     print('PASS')
@@ -786,7 +786,7 @@ fi
 
 # Comment length validation
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_comment_length
+from usr.plugins.facebook.helpers.sanitize import validate_comment_length
 ok, count = validate_comment_length('x' * 8001)
 if not ok:
     print('PASS')
@@ -801,7 +801,7 @@ else
 fi
 
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import validate_comment_length
+from usr.plugins.facebook.helpers.sanitize import validate_comment_length
 ok, count = validate_comment_length('Great post!')
 if ok:
     print('PASS')
@@ -818,7 +818,7 @@ fi
 # HV-36: No credentials — has_credentials detects empty config
 track "HV-36"
 RESULT=$(pyexec "
-from plugins.facebook.helpers.facebook_auth import has_credentials
+from usr.plugins.facebook.helpers.facebook_auth import has_credentials
 if not has_credentials({'page_access_token': '', 'page_id': ''}):
     print('PASS')
 else:
@@ -833,7 +833,7 @@ fi
 
 # Also test with missing keys
 RESULT=$(pyexec "
-from plugins.facebook.helpers.facebook_auth import has_credentials
+from usr.plugins.facebook.helpers.facebook_auth import has_credentials
 if not has_credentials({}):
     print('PASS')
 else:
@@ -848,7 +848,7 @@ fi
 
 # Auth helper: get_auth_params returns empty dict without token
 RESULT=$(pyexec "
-from plugins.facebook.helpers.facebook_auth import get_auth_params
+from usr.plugins.facebook.helpers.facebook_auth import get_auth_params
 params = get_auth_params({})
 if params == {}:
     print('PASS')
@@ -864,7 +864,7 @@ fi
 
 # Auth helper: get_auth_params returns access_token with token
 RESULT=$(pyexec "
-from plugins.facebook.helpers.facebook_auth import get_auth_params
+from usr.plugins.facebook.helpers.facebook_auth import get_auth_params
 params = get_auth_params({'page_access_token': 'test_token'})
 if params.get('access_token') == 'test_token':
     print('PASS')
@@ -885,7 +885,7 @@ section "Phase E: Sanitize & Format (HV-37, HV-40)"
 # HV-37 (partial): Emoji handling — sanitize_text preserves emojis
 track "HV-37"
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 t = sanitize_text('Testing emojis! \U0001f389\U0001f680\U0001f4af')
 if '\U0001f389' in t and '\U0001f680' in t and '\U0001f4af' in t:
     print('PASS')
@@ -901,7 +901,7 @@ fi
 
 # Text sanitization: strips zero-width chars
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 t = sanitize_text('Hello\u200bWorld')
 if 'HelloWorld' in t and '\u200b' not in t:
     print('PASS')
@@ -917,7 +917,7 @@ fi
 
 # Text sanitization: collapses excessive newlines
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 t = sanitize_text('Hello\n\n\n\n\nWorld')
 if t == 'Hello\n\nWorld':
     print('PASS')
@@ -933,7 +933,7 @@ fi
 
 # Text sanitization: NFKC normalization
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 import unicodedata
 t = sanitize_text('\uff28\uff45\uff4c\uff4c\uff4f')  # fullwidth 'Hello'
 if unicodedata.is_normalized('NFKC', t):
@@ -950,7 +950,7 @@ fi
 
 # Text sanitization: trims whitespace
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import sanitize_text
+from usr.plugins.facebook.helpers.sanitize import sanitize_text
 t = sanitize_text('   Hello World   ')
 if t == 'Hello World':
     print('PASS')
@@ -966,7 +966,7 @@ fi
 
 # format_post: includes message, ID, metrics
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_post
+from usr.plugins.facebook.helpers.sanitize import format_post
 p = format_post({
     'id': '123_456',
     'message': 'Hello from Agent Zero!',
@@ -990,7 +990,7 @@ fi
 
 # format_posts: empty list
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_posts
+from usr.plugins.facebook.helpers.sanitize import format_posts
 r = format_posts([])
 if 'No posts found' in r:
     print('PASS')
@@ -1006,7 +1006,7 @@ fi
 
 # format_comment: includes author and message
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_comment
+from usr.plugins.facebook.helpers.sanitize import format_comment
 c = format_comment({
     'id': '123_456_789',
     'from': {'name': 'Test User'},
@@ -1029,7 +1029,7 @@ fi
 
 # format_comments: empty list
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_comments
+from usr.plugins.facebook.helpers.sanitize import format_comments
 r = format_comments([])
 if 'No comments found' in r:
     print('PASS')
@@ -1045,7 +1045,7 @@ fi
 
 # format_page_info: includes name, category, fans
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_page_info
+from usr.plugins.facebook.helpers.sanitize import format_page_info
 p = format_page_info({
     'name': 'Test Page',
     'category': 'Technology',
@@ -1068,7 +1068,7 @@ fi
 
 # format_insights: includes metric name and values
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_insights
+from usr.plugins.facebook.helpers.sanitize import format_insights
 r = format_insights([
     {'name': 'page_impressions', 'title': 'Page Impressions', 'period': 'day',
      'description': 'Total impressions', 'values': [{'end_time': '2026-01-01', 'value': 1234}]},
@@ -1087,7 +1087,7 @@ fi
 
 # format_insights: empty data
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_insights
+from usr.plugins.facebook.helpers.sanitize import format_insights
 r = format_insights([])
 if 'No insights' in r:
     print('PASS')
@@ -1103,7 +1103,7 @@ fi
 
 # format_post: truncation of long messages at 500 chars
 RESULT=$(pyexec "
-from plugins.facebook.helpers.sanitize import format_post
+from usr.plugins.facebook.helpers.sanitize import format_post
 p = format_post({
     'id': '123_456',
     'message': 'A' * 600,

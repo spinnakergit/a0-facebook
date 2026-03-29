@@ -16,16 +16,16 @@ class FacebookManage(Tool):
                 break_loop=False,
             )
 
-        from plugins.facebook.helpers.facebook_auth import get_facebook_config
+        from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
         config = get_facebook_config(self.agent)
-        from plugins.facebook.helpers.facebook_client import FacebookClient
+        from usr.plugins.facebook.helpers.facebook_client import FacebookClient
         client = FacebookClient(config)
 
         try:
             if action == "delete_post":
                 if not post_id:
                     return Response(message="Error: 'post_id' is required.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import validate_post_id
+                from usr.plugins.facebook.helpers.sanitize import validate_post_id
                 try:
                     post_id = validate_post_id(post_id)
                 except ValueError as e:
@@ -45,7 +45,7 @@ class FacebookManage(Tool):
                     return Response(message="Error: 'post_id' is required.", break_loop=False)
                 if not message:
                     return Response(message="Error: 'message' is required for editing.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import validate_post_id, sanitize_text, validate_post_length
+                from usr.plugins.facebook.helpers.sanitize import validate_post_id, sanitize_text, validate_post_length
                 try:
                     post_id = validate_post_id(post_id)
                 except ValueError as e:
@@ -70,7 +70,7 @@ class FacebookManage(Tool):
             elif action == "hide_comment":
                 if not comment_id:
                     return Response(message="Error: 'comment_id' is required.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import validate_comment_id
+                from usr.plugins.facebook.helpers.sanitize import validate_comment_id
                 try:
                     comment_id = validate_comment_id(comment_id)
                 except ValueError as e:
@@ -88,7 +88,7 @@ class FacebookManage(Tool):
             elif action == "unhide_comment":
                 if not comment_id:
                     return Response(message="Error: 'comment_id' is required.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import validate_comment_id
+                from usr.plugins.facebook.helpers.sanitize import validate_comment_id
                 try:
                     comment_id = validate_comment_id(comment_id)
                 except ValueError as e:

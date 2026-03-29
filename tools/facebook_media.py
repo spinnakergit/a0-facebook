@@ -46,12 +46,12 @@ class FacebookMedia(Tool):
             image_path = real_path
 
         if caption:
-            from plugins.facebook.helpers.sanitize import sanitize_text
+            from usr.plugins.facebook.helpers.sanitize import sanitize_text
             caption = sanitize_text(caption)
 
-        from plugins.facebook.helpers.facebook_auth import get_facebook_config
+        from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
         config = get_facebook_config(self.agent)
-        from plugins.facebook.helpers.facebook_client import FacebookClient
+        from usr.plugins.facebook.helpers.facebook_client import FacebookClient
         client = FacebookClient(config)
 
         try:

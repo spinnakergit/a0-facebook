@@ -18,22 +18,22 @@ class FacebookComment(Tool):
         if not comment_id:
             return Response(message="Error: 'comment_id' is required.", break_loop=False)
 
-        from plugins.facebook.helpers.sanitize import validate_comment_id
+        from usr.plugins.facebook.helpers.sanitize import validate_comment_id
         try:
             comment_id = validate_comment_id(comment_id)
         except ValueError as e:
             return Response(message=f"Validation error: {e}", break_loop=False)
 
-        from plugins.facebook.helpers.facebook_auth import get_facebook_config
+        from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
         config = get_facebook_config(self.agent)
-        from plugins.facebook.helpers.facebook_client import FacebookClient
+        from usr.plugins.facebook.helpers.facebook_client import FacebookClient
         client = FacebookClient(config)
 
         try:
             if action == "reply":
                 if not message:
                     return Response(message="Error: 'message' is required for replies.", break_loop=False)
-                from plugins.facebook.helpers.sanitize import sanitize_text, validate_comment_length
+                from usr.plugins.facebook.helpers.sanitize import sanitize_text, validate_comment_length
                 message = sanitize_text(message)
                 ok, count = validate_comment_length(message)
                 if not ok:

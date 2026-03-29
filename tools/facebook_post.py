@@ -19,7 +19,7 @@ class FacebookPost(Tool):
         if not message and not link:
             return Response(message="Error: 'message' or 'link' is required.", break_loop=False)
 
-        from plugins.facebook.helpers.sanitize import sanitize_text, validate_post_length
+        from usr.plugins.facebook.helpers.sanitize import sanitize_text, validate_post_length
         if message:
             message = sanitize_text(message)
             ok, count = validate_post_length(message)
@@ -29,9 +29,9 @@ class FacebookPost(Tool):
                     break_loop=False,
                 )
 
-        from plugins.facebook.helpers.facebook_auth import get_facebook_config
+        from usr.plugins.facebook.helpers.facebook_auth import get_facebook_config
         config = get_facebook_config(self.agent)
-        from plugins.facebook.helpers.facebook_client import FacebookClient
+        from usr.plugins.facebook.helpers.facebook_client import FacebookClient
         client = FacebookClient(config)
 
         try:
