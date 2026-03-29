@@ -92,6 +92,8 @@ Meta now uses a **use-case-based flow** instead of the older "app type" selectio
 
 > **Note:** Older guides reference selecting "Business" as the app type — Meta replaced this with the use-case flow. The functionality is the same.
 
+> **Tip:** Facebook, Instagram, and Threads all use Meta's Graph API and can share a single app. If you plan to use multiple Meta plugins, create one app and add each product (Instagram Graph API, Threads API) from the dashboard instead of creating separate apps.
+
 ### 3. Configure Permissions
 
 Your app needs these permissions for full plugin functionality:

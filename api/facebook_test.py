@@ -16,6 +16,17 @@ class FacebookTest(ApiHandler):
 
     async def process(self, input: dict, request: Request) -> dict | Response:
         try:
+            # Self-heal: ensure symlink exists for plugin namespace imports
+            from pathlib import Path
+            plugin_dir = Path(__file__).resolve().parent.parent
+            for root in [Path("/a0"), Path("/git/agent-zero")]:
+                plugins_dir = root / "plugins"
+                if plugins_dir.is_dir():
+                    symlink = plugins_dir / "facebook"
+                    if not symlink.exists():
+                        symlink.symlink_to(plugin_dir)
+                    break
+
             from plugins.facebook.helpers.facebook_auth import (
                 get_facebook_config,
                 is_authenticated,

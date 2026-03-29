@@ -1,101 +1,150 @@
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 16px;">
+<html>
+<head><title>Facebook Pages</title></head>
+<body>
+    <div x-data="{ activeTab: 'credentials' }" x-init="
+        if (!config.page_access_token) config.page_access_token = '';
+        if (!config.page_id) config.page_id = '';
+        if (!config.defaults) config.defaults = {};
+        if (!config.defaults.post_limit) config.defaults.post_limit = 25;
+        if (!config.defaults.comment_limit) config.defaults.comment_limit = 25;
+        if (!config.defaults.insights_period) config.defaults.insights_period = 'day';
+        if (!config.memory) config.memory = {};
+        if (config.memory.auto_save === undefined) config.memory.auto_save = true;
+        if (!config.memory.export_format) config.memory.export_format = 'markdown';
+        if (!config.security) config.security = {};
+        if (!config.security.max_post_length) config.security.max_post_length = 63206;
+        if (!config.security.max_comment_length) config.security.max_comment_length = 8000;
+    ">
+        <template x-if="config">
+            <div>
+                <!-- Tab Navigation -->
+                <div style="display: flex; gap: 0; border-bottom: 2px solid var(--border-color, #e0e0e0); margin-bottom: 16px;">
+                    <template x-for="tab in ['credentials', 'defaults', 'security']">
+                        <button @click="activeTab = tab"
+                            :style="'padding: 8px 16px; border: none; background: none; cursor: pointer; font-size: 12px; font-weight: 600; margin-bottom: -2px; color: ' + (activeTab === tab ? '#1877F2' : 'var(--text-secondary, #888)') + '; border-bottom: 2px solid ' + (activeTab === tab ? '#1877F2' : 'transparent')"
+                            x-text="tab.charAt(0).toUpperCase() + tab.slice(1)"></button>
+                    </template>
+                </div>
 
-    <h4 style="margin: 0 0 16px 0; color: #1877F2;">Facebook Pages Settings</h4>
+                <!-- Credentials Tab -->
+                <div x-show="activeTab === 'credentials'">
+                    <div class="section-description">Need help? See the <a href="https://github.com/spinnakergit/a0-facebook/blob/main/docs/SETUP.md" target="_blank" style="color: var(--link-color, #1877F2);">Setup Guide</a> for step-by-step instructions.</div>
 
-    <div style="margin-bottom: 16px;">
-        <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px;">Page Access Token</label>
-        <input data-fb="page_access_token" type="password" placeholder="Enter your Page Access Token"
-               style="width: 100%; padding: 6px 10px; border: 1px solid var(--border-color, #ccc); border-radius: 4px; font-size: 13px; box-sizing: border-box;">
-        <small style="color: var(--text-secondary, #888);">Long-lived Page Access Token with pages_manage_posts permission</small>
+                    <div class="section-title">Page Authentication</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Page Access Token</div>
+                            <div class="field-description">Long-lived Page Access Token with pages_manage_posts permission.</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="password" x-model="config.page_access_token" placeholder="Enter your Page Access Token">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Page ID</div>
+                            <div class="field-description">Numeric Page ID. Optional if using a Page Access Token — auto-resolved from /me.</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="text" x-model="config.page_id" placeholder="e.g., 123456789012345">
+                        </div>
+                    </div>
+
+                    <div style="padding: 10px; background: var(--bg-secondary, #f5f5f5); border-radius: 6px; font-size: 12px;">
+                        <strong>How to get a Page Access Token:</strong>
+                        <ol style="margin: 4px 0 0 0; padding-left: 20px;">
+                            <li>Go to <a href="https://developers.facebook.com/apps/" target="_blank" style="color: #1877F2;">developers.facebook.com/apps</a> and create or select an app</li>
+                            <li>Add the <strong>Facebook Login</strong> product to your app</li>
+                            <li>Go to <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color: #1877F2;">Graph API Explorer</a></li>
+                            <li>Select your app, then click <strong>Get User Access Token</strong></li>
+                            <li>Select permissions: <code>pages_manage_posts</code>, <code>pages_read_engagement</code>, <code>pages_read_user_content</code>, <code>pages_manage_metadata</code></li>
+                            <li>Click <strong>Generate Access Token</strong> and authorize</li>
+                            <li>Use the <strong>Page Access Token</strong> from the dropdown (not the User token)</li>
+                            <li>For a long-lived token, exchange via the <a href="https://developers.facebook.com/tools/accesstoken/" target="_blank" style="color: #1877F2;">Access Token Debugger</a></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Defaults Tab -->
+                <div x-show="activeTab === 'defaults'">
+                    <div class="section-title">Post & Comment Defaults</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Post Limit</div>
+                            <div class="field-description">Maximum posts per feed read (1-100).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="100" x-model.number="config.defaults.post_limit">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Comment Limit</div>
+                            <div class="field-description">Maximum comments per post read (1-100).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="100" x-model.number="config.defaults.comment_limit">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Insights Period</div>
+                            <div class="field-description">Default period for page insights queries.</div>
+                        </div>
+                        <div class="field-control">
+                            <select x-model="config.defaults.insights_period">
+                                <option value="day">Day</option>
+                                <option value="week">Week</option>
+                                <option value="days_28">28 Days</option>
+                                <option value="lifetime">Lifetime</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="section-title">Memory</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Auto-save to memory</div>
+                            <div class="field-description">Automatically save research summaries to agent memory.</div>
+                        </div>
+                        <div class="field-control">
+                            <label class="toggle"><input type="checkbox" x-model="config.memory.auto_save"><span class="toggler"></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Tab -->
+                <div x-show="activeTab === 'security'">
+                    <div class="section-title">Security Settings</div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Max Post Length</div>
+                            <div class="field-description">Maximum characters per post (1-63206).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="63206" x-model.number="config.security.max_post_length">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="field-label">
+                            <div class="field-title">Max Comment Length</div>
+                            <div class="field-description">Maximum characters per comment (1-8000).</div>
+                        </div>
+                        <div class="field-control">
+                            <input type="number" min="1" max="8000" x-model.number="config.security.max_comment_length">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
     </div>
-
-    <div style="margin-bottom: 16px;">
-        <label style="display: block; font-weight: 600; margin-bottom: 4px; font-size: 13px;">Page ID</label>
-        <input data-fb="page_id" type="text" placeholder="e.g., 123456789012345"
-               style="width: 100%; padding: 6px 10px; border: 1px solid var(--border-color, #ccc); border-radius: 4px; font-size: 13px; box-sizing: border-box;">
-        <small style="color: var(--text-secondary, #888);">Numeric Page ID (optional if token is a Page Access Token — auto-resolved from /me)</small>
-    </div>
-
-    <div style="margin-bottom: 16px; padding: 10px; background: var(--bg-secondary, #f5f5f5); border-radius: 4px; font-size: 12px;">
-        <strong>How to get a Page Access Token:</strong>
-        <ol style="margin: 4px 0 0 0; padding-left: 20px;">
-            <li>Go to <a href="https://developers.facebook.com/apps/" target="_blank" style="color: #1877F2;">developers.facebook.com/apps</a> and create or select an app</li>
-            <li>Add the <strong>Facebook Login</strong> product to your app</li>
-            <li>Go to <a href="https://developers.facebook.com/tools/explorer/" target="_blank" style="color: #1877F2;">Graph API Explorer</a></li>
-            <li>Select your app, then click <strong>Get User Access Token</strong></li>
-            <li>Select permissions: <code>pages_manage_posts</code>, <code>pages_read_engagement</code>, <code>pages_read_user_content</code>, <code>pages_manage_metadata</code></li>
-            <li>Click <strong>Generate Access Token</strong> and authorize</li>
-            <li>Use the <strong>Page Access Token</strong> from the dropdown (not the User token)</li>
-            <li>For a long-lived token, exchange via the <a href="https://developers.facebook.com/tools/accesstoken/" target="_blank" style="color: #1877F2;">Access Token Debugger</a></li>
-        </ol>
-    </div>
-
-    <button data-fb="save-btn"
-            style="background: #1877F2; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-size: 13px;">
-        Save Facebook Pages Settings
-    </button>
-    <span data-fb="save-status" style="margin-left: 10px; font-size: 12px;"></span>
-</div>
-
-<script>
-(function() {
-    const fetchApi = globalThis.fetchApi || fetch;
-    const API_CONFIG = '/api/plugins/facebook/facebook_config_api';
-
-    function $(sel) { return document.querySelector('[data-fb="' + sel + '"]'); }
-
-    async function loadConfig() {
-        try {
-            const resp = await fetchApi(API_CONFIG);
-            const config = await resp.json();
-            const tokenEl = $('page_access_token');
-            const idEl = $('page_id');
-            if (config.page_access_token && tokenEl) tokenEl.value = config.page_access_token;
-            if (config.page_id && idEl) idEl.value = config.page_id;
-        } catch (e) {
-            console.error('Failed to load config:', e);
-        }
-    }
-
-    async function saveConfig() {
-        const status = $('save-status');
-        if (!status) return;
-        status.textContent = 'Saving...';
-        status.style.color = '#e65100';
-        try {
-            const config = {
-                page_access_token: ($('page_access_token') || {}).value || '',
-                page_id: ($('page_id') || {}).value || '',
-            };
-            const resp = await fetchApi(API_CONFIG, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({action: 'set', config: config})
-            });
-            const data = await resp.json();
-            if (data.ok) {
-                status.textContent = 'Saved!';
-                status.style.color = '#2e7d32';
-            } else {
-                status.textContent = data.error || 'Save failed';
-                status.style.color = '#c62828';
-            }
-        } catch (e) {
-            status.textContent = 'Save failed';
-            status.style.color = '#c62828';
-        }
-        setTimeout(() => { status.textContent = ''; }, 3000);
-    }
-
-    function init() {
-        const btn = $('save-btn');
-        if (btn) {
-            btn.addEventListener('click', saveConfig);
-            loadConfig();
-        } else {
-            setTimeout(init, 50);
-        }
-    }
-    init();
-})();
-</script>
+</body>
+</html>
